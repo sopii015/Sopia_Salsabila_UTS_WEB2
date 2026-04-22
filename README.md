@@ -1,5 +1,4 @@
 # Mandasari Kue - Premium Cake Shop System 🍰✨
----
 
 ## 📝 Deskripsi Project
 **Mandasari Kue** adalah platform e-commerce modern yang dikhususkan untuk penjualan produk kue premium seperti brownies dan bakpia. Proyek ini dibangun untuk memenuhi kriteria penilaian UTS mata kuliah Pemrograman Web 2 dengan fokus pada antarmuka yang bersih (*clean*), elegan, dan sepenuhnya responsif menggunakan **Tailwind CSS**.
