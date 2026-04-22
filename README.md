@@ -43,6 +43,6 @@ Karena proyek ini menggunakan Fetch API untuk mengambil data dari file `products
 
 Aplikasi ini telah dideploy secara online dan dapat diakses secara publik melalui tautan berikut:
 
-👉 **[Demo Mandasari Kue di GitHub Pages](https://sopia-salsabila.github.io/Sopia_Salsabila_UTS_Web2/)**
+👉 **https://sopii015.github.io/Sopia_Salsabila_UTS_WEB2/**
 
 ---
