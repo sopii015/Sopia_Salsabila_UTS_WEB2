@@ -1,6 +1,4 @@
 # Mandasari Kue - Premium Cake Shop System 🍰✨
-**Proyek Ujian Tengah Semester (UTS) - Pemrograman Web 2**
-
 ---
 
 ## 📝 Deskripsi Project
