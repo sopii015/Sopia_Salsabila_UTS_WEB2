@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Toko Kue Mandasari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'mandasari-navy': '#0A192F',
+                        'mandasari-gold': '#C5A059',
+                        'mandasari-cream': '#F9F6F0',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-mandasari-cream text-mandasari-navy font-sans min-h-screen">
+
+    <nav class="w-full py-5 px-8 bg-mandasari-navy text-white shadow-xl border-b-4 border-mandasari-gold">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-mandasari-gold rounded-lg">
+                    <i data-lucide="chef-hat" class="text-mandasari-navy w-6 h-6"></i>
+                </div>
+                <span class="font-serif text-2xl tracking-wide">Mandasari <span class="text-mandasari-gold">Admin</span></span>
+            </div>
+            <button id="logout-btn" class="flex items-center gap-2 px-4 py-2 rounded-full border border-mandasari-gold/50 hover:bg-mandasari-gold hover:text-mandasari-navy transition-all duration-300 font-medium text-sm">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-12 px-6">
+        <div class="mb-10 flex justify-between items-end">
+            <div>
+                <h1 class="font-serif text-4xl mb-2">Ringkasan Toko</h1>
+                <p class="text-slate-500">Pantau pesanan kue dan performa penjualan hari ini.</p>
+            </div>
+            <div class="text-sm font-semibold bg-white px-4 py-2 rounded-full shadow-sm border border-mandasari-gold/20">
+                <span id="current-date">21 April 2026</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-white border-l-4 border-mandasari-gold p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Pelanggan</p>
+                        <h3 class="text-3xl font-bold mt-1" id="stat-users">0</h3>
+                    </div>
+                    <i data-lucide="users" class="text-mandasari-gold w-8 h-8 opacity-20"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white border-l-4 border-mandasari-gold p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Pesanan Kue</p>
+                        <h3 class="text-3xl font-bold mt-1" id="stat-orders">0</h3>
+                    </div>
+                    <i data-lucide="cake" class="text-mandasari-gold w-8 h-8 opacity-20"></i>
+                </div>
+            </div>
+
+            <div class="bg-mandasari-navy text-white p-6 rounded-xl shadow-md relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-sm font-medium text-mandasari-gold uppercase tracking-wider">Total Pendapatan</p>
+                    <h3 class="text-3xl font-bold mt-1" id="stat-revenue">Rp 0</h3>
+                </div>
+                <i data-lucide="banknote" class="absolute -bottom-2 -right-2 w-20 h-20 text-white opacity-5"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h2 class="font-serif text-2xl text-mandasari-navy">Pesanan Terbaru</h2>
+                <button class="text-mandasari-gold text-sm font-semibold hover:underline">Lihat Semua</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-slate-400 text-xs uppercase font-bold tracking-widest">
+                        <tr>
+                            <th class="py-4 px-6">ID Transaksi</th>
+                            <th class="py-4 px-6">Pelanggan</th>
+                            <th class="py-4 px-6">Status</th>
+                            <th class="py-4 px-6 text-right">Total Bayar</th>
+                            <th class="py-4 px-6 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody" class="divide-y divide-slate-100">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        // Logika pengisian data otomatis akan ada di admin-mandasari.js
+    </script>
+</body>
+</html>
