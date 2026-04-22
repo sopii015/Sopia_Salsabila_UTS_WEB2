@@ -30,43 +30,54 @@
 <body class="bg-mandasari-cream text-mandasari-navy font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
 
     <nav id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 py-5 px-6 md:px-12 bg-white/80 backdrop-blur-md border-b border-mandasari-gold/10">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="index.html" class="font-serif text-2xl font-black tracking-tight flex items-center gap-2 z-50">
-                Mandasari <span class="text-mandasari-gold underline decoration-1 underline-offset-4">Kue</span>
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <a href="index.html" class="font-serif text-2xl font-black tracking-tight flex items-center gap-2">
+            Mandasari <span class="text-mandasari-gold underline decoration-1 underline-offset-4">Kue</span>
+        </a>
+
+        <div class="hidden md:flex items-center space-x-10 text-sm font-semibold tracking-wide uppercase">
+            <a href="index.html" class="text-mandasari-gold border-b-2 border-mandasari-gold pb-1">Beranda</a>
+            <a href="products.html" class="hover:text-mandasari-gold transition-colors">Produk</a>
+            <a href="about.html" class="hover:text-mandasari-gold transition-colors">Tentang Kami</a>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="cart.html" class="hover:text-mandasari-gold relative">
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                <span id="cart-badge-desktop" class="absolute -top-2 -right-2 bg-mandasari-navy text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-bold hidden">0</span>
             </a>
-
-            <div class="hidden md:flex items-center space-x-10 text-sm font-semibold tracking-wide uppercase">
-                <a href="index.html" class="text-mandasari-gold border-b-2 border-mandasari-gold pb-1">Beranda</a>
-                <a href="products.html" class="hover:text-mandasari-gold transition-colors">Produk</a>
-                <a href="about.html" class="hover:text-mandasari-gold transition-colors">Tentang Kami</a>
+            <div class="w-px h-6 bg-slate-200"></div>
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="text-sm font-bold">Masuk</a>
+                <a href="register.html" class="bg-mandasari-navy text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg">Daftar</a>
             </div>
+        </div>
 
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="cart.html" class="hover:text-mandasari-gold transition-colors relative">
-                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-mandasari-navy text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-bold hidden">0</span>
-                </a>
+        <div class="flex md:hidden items-center space-x-5">
+            <a href="cart.html" class="relative text-mandasari-navy">
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                <span id="cart-badge-mobile" class="absolute -top-2 -right-2 bg-mandasari-gold text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            </a>
+            
+            <div class="relative">
+                <button id="mobile-menu-btn" class="text-mandasari-navy p-1 focus:outline-none">
+                    <i data-lucide="menu" id="menu-icon" class="w-7 h-7"></i>
+                </button>
 
-                <div class="w-px h-6 bg-slate-200"></div>
-
-                <div id="auth-links" class="flex items-center space-x-4">
-                    <a href="login.html" class="text-sm font-bold hover:text-mandasari-gold">Masuk</a>
-                    <a href="register.html" class="bg-mandasari-navy text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-slate-800 transition-transform hover:scale-105 shadow-lg shadow-mandasari-navy/20">Daftar</a>
-                </div>
-                
-                <div id="user-menu" class="hidden relative group">
-                    <button class="flex items-center space-x-2 font-bold text-sm">
-                        <i data-lucide="circle-user" class="w-6 h-6"></i>
-                        <span id="user-greeting"></span>
-                    </button>
-                    <div class="absolute right-0 mt-3 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 overflow-hidden">
-                        <a href="orders.html" class="block px-5 py-4 text-sm hover:bg-mandasari-cream border-b border-slate-50">Riwayat Pesanan</a>
-                        <button id="logout-btn" class="w-full text-left px-5 py-4 text-sm text-red-500 hover:bg-red-50">Keluar</button>
+                <div id="mobile-menu" class="absolute right-0 mt-3 w-40 bg-white rounded-xl shadow-xl border border-slate-100 py-1 opacity-0 invisible scale-95 transition-all duration-300 origin-top-right z-50">
+                    <div class="flex flex-col text-[12px] font-bold text-mandasari-navy tracking-tight">
+                        <a href="index.html" class="px-4 py-3 hover:bg-mandasari-cream text-mandasari-gold">Beranda</a>
+                        <a href="products.html" class="px-4 py-3 hover:bg-mandasari-cream border-t border-slate-50">Produk</a>
+                        <a href="about.html" class="px-4 py-3 hover:bg-mandasari-cream border-t border-slate-50">Tentang Kami</a>
+                        <div class="h-px bg-slate-100 mx-4"></div>
+                        <a href="login.html" class="px-4 py-3 hover:bg-mandasari-cream">Masuk</a>
+                        <a href="register.html" class="px-4 py-3 hover:bg-mandasari-cream">Daftar</a>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <main class="flex-grow pt-16">
         <style>
@@ -234,5 +245,35 @@
         // Memastikan icon lucide ter-render di awal
         lucide.createIcons();
     </script>
+   <script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    // Toggle Menu
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !mobileMenu.classList.contains('invisible');
+        
+        if (isOpen) {
+            closeMenu();
+        } else {
+            mobileMenu.classList.remove('opacity-0', 'invisible', 'scale-95');
+            mobileMenu.classList.add('opacity-100', 'visible', 'scale-100');
+            menuIcon.setAttribute('data-lucide', 'x');
+        }
+        if(window.lucide) lucide.createIcons();
+    });
+
+    function closeMenu() {
+        mobileMenu.classList.add('opacity-0', 'invisible', 'scale-95');
+        mobileMenu.classList.remove('opacity-100', 'visible', 'scale-100');
+        menuIcon.setAttribute('data-lucide', 'menu');
+        if(window.lucide) lucide.createIcons();
+    }
+
+    // Klik di mana saja untuk nutup menu
+    document.addEventListener('click', () => closeMenu());
+</script>
 </body>
 </html>
