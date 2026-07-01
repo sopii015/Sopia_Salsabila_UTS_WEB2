@@ -33,7 +33,11 @@ const MandasariAuth = {
         const menuUser = document.getElementById('user-profile-dropdown');
         const linkAuth = document.getElementById('auth-buttons-group');
         const namaUserEl = document.getElementById('display-user-name');
-        
+
+        // Elemen untuk menu mobile
+        const mobileAuthGroup = document.getElementById('mobile-auth-buttons-group');
+        const mobileUserGroup = document.getElementById('mobile-user-profile-group');
+
         const statusLogin = MandasariAuth.isLoggedIn();
 
         if (statusLogin) {
@@ -43,9 +47,13 @@ const MandasariAuth = {
                 const panggilan = MandasariAuth.sesi.name.split(' ')[0];
                 namaUserEl.textContent = `Halo, ${panggilan}`;
             }
+            if (mobileAuthGroup) mobileAuthGroup.classList.add('hidden');
+            if (mobileUserGroup) mobileUserGroup.classList.remove('hidden');
         } else {
             if (menuUser) menuUser.classList.add('hidden');
             if (linkAuth) linkAuth.classList.remove('hidden');
+            if (mobileAuthGroup) mobileAuthGroup.classList.remove('hidden');
+            if (mobileUserGroup) mobileUserGroup.classList.add('hidden');
         }
     },
 
@@ -115,15 +123,15 @@ const MandasariAuth = {
     keluar: () => {
         MandasariAuth.sesi = null;
         Storage.remove(STORAGE_KEYS.SESSION);
-        
+
         // Opsional: Bersihkan keranjang saat logout (tergantung kebutuhan bisnis)
         // Storage.remove(STORAGE_KEYS.CART);
-        
+
         MandasariAuth.perbaruiTampilanNavigasi();
-        
+
         // Notifikasi dan Redirect
         Toast.show('Anda telah keluar dari akun.', 'info');
-        
+
         // Proteksi halaman: Jika di halaman privat, tendang ke index
         const privatePages = ['checkout.html', 'admin-dashboard.html', 'riwayat.html'];
         const path = window.location.pathname;
@@ -160,8 +168,12 @@ document.addEventListener('click', (e) => {
         MandasariAuth.keluar();
     }
 });
+
 // ============================================
 // PATCH KOMPATIBILITAS - jangan hapus
+// login.html & register.html memanggil "Auth.login()" / "Auth.register()",
+// sedangkan di file ini fungsinya bernama "masuk" / "daftar".
+// Baris ini menyambungkan keduanya tanpa perlu ubah HTML.
 // ============================================
 MandasariAuth.login = MandasariAuth.masuk;
 MandasariAuth.register = MandasariAuth.daftar;
