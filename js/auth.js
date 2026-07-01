@@ -160,3 +160,9 @@ document.addEventListener('click', (e) => {
         MandasariAuth.keluar();
     }
 });
+// ============================================
+// PATCH KOMPATIBILITAS - jangan hapus
+// ============================================
+MandasariAuth.login = MandasariAuth.masuk;
+MandasariAuth.register = MandasariAuth.daftar;
+window.Auth = MandasariAuth;
