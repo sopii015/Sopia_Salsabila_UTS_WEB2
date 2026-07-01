@@ -47,9 +47,25 @@
                 <span id="cart-badge-desktop" class="absolute -top-2 -right-2 bg-mandasari-navy text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-bold hidden">0</span>
             </a>
             <div class="w-px h-6 bg-slate-200"></div>
-            <div class="flex items-center space-x-4">
+
+            <!-- Tampil kalau BELUM login -->
+            <div id="auth-buttons-group" class="flex items-center space-x-4">
                 <a href="login.html" class="text-sm font-bold">Masuk</a>
                 <a href="register.html" class="bg-mandasari-navy text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg">Daftar</a>
+            </div>
+
+            <!-- Tampil kalau SUDAH login -->
+            <div id="user-profile-dropdown" class="hidden dropdown-container relative">
+                <button class="dropdown-trigger flex items-center gap-2 text-sm font-bold cursor-pointer">
+                    <i data-lucide="user-circle" class="w-6 h-6 text-mandasari-gold"></i>
+                    <span id="display-user-name"></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                <div class="dropdown-content absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-1 opacity-0 invisible translate-y-2 transition-all duration-300 origin-top-right z-50">
+                    <a href="orders.html" class="block px-4 py-3 text-sm font-semibold hover:bg-mandasari-cream border-b border-slate-50">Riwayat Pesanan</a>
+                    <a href="wishlist.html" class="block px-4 py-3 text-sm font-semibold hover:bg-mandasari-cream border-b border-slate-50">Wishlist Saya</a>
+                    <a href="#" class="action-logout block px-4 py-3 text-sm font-semibold text-red-500 hover:bg-mandasari-cream">Keluar</a>
+                </div>
             </div>
         </div>
 
@@ -70,8 +86,19 @@
                         <a href="products.html" class="px-4 py-3 hover:bg-mandasari-cream border-t border-slate-50">Produk</a>
                         <a href="about.html" class="px-4 py-3 hover:bg-mandasari-cream border-t border-slate-50">Tentang Kami</a>
                         <div class="h-px bg-slate-100 mx-4"></div>
-                        <a href="login.html" class="px-4 py-3 hover:bg-mandasari-cream">Masuk</a>
-                        <a href="register.html" class="px-4 py-3 hover:bg-mandasari-cream">Daftar</a>
+
+                        <!-- Tampil kalau BELUM login -->
+                        <div id="mobile-auth-buttons-group">
+                            <a href="login.html" class="block px-4 py-3 hover:bg-mandasari-cream">Masuk</a>
+                            <a href="register.html" class="block px-4 py-3 hover:bg-mandasari-cream">Daftar</a>
+                        </div>
+
+                        <!-- Tampil kalau SUDAH login -->
+                        <div id="mobile-user-profile-group" class="hidden">
+                            <a href="orders.html" class="block px-4 py-3 hover:bg-mandasari-cream">Riwayat Pesanan</a>
+                            <a href="wishlist.html" class="block px-4 py-3 hover:bg-mandasari-cream">Wishlist Saya</a>
+                            <a href="#" class="action-logout block px-4 py-3 text-red-500 hover:bg-mandasari-cream">Keluar</a>
+                        </div>
                     </div>
                 </div>
             </div>
