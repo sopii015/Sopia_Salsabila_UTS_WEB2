@@ -48,10 +48,9 @@
             <div class="h-1 flex-grow bg-mandasari-gold/20 rounded-full"></div>
         </div>
 
-        <div class="flex flex-col lg:row gap-10">
+        <div class="flex flex-col lg:flex-row gap-10">
             <div class="flex-grow">
-                <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm" id="cart-container">
-                    </div>
+                <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm" id="cart-container"></div>
             </div>
 
             <div class="w-full lg:w-96 flex-none" id="summary-container" style="display: none;">
@@ -69,7 +68,7 @@
                         </div>
                     </div>
 
-                    <a href="checkout.html" class="w-full bg-mandasari-gold text-mandasari-navy font-bold py-4 rounded-xl flex justify-center items-center gap-2 hover:bg-yellow-500 transition-all transform hover:-translate-y-1">
+                    <a href="checkout.html" class="w-full bg-mandasari-gold text-mandasari-navy font-bold py-4 rounded-xl type-button flex justify-center items-center gap-2 hover:bg-yellow-500 transition-all transform hover:-translate-y-1">
                         Lanjutkan Pembayaran
                         <i data-lucide="credit-card" class="w-5 h-5"></i>
                     </a>
@@ -83,21 +82,21 @@
     </main>
 
     <script src="js/storage.js"></script>
-    <script src="js/cart.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
 
     <script>
         lucide.createIcons();
 
-        // Cek login sebelum akses keranjang
-        if (!localStorage.getItem('user_session')) {
+        if (!Auth.isLoggedIn()) {
             window.location.href = 'login.html';
         }
 
         const renderCart = () => {
             const container = document.getElementById('cart-container');
             const summaryContainer = document.getElementById('summary-container');
-            const items = JSON.parse(localStorage.getItem('cart_items')) || [];
+            const items = Cart.items || [];
             
             if (items.length === 0) {
                 container.innerHTML = `
@@ -115,7 +114,6 @@
                 return;
             }
 
-            // Render Item Kue
             container.innerHTML = items.map(item => `
                 <div class="flex flex-col md:flex-row items-center gap-6 py-6 border-b border-slate-100 last:border-0 group">
                     <div class="w-28 h-28 rounded-2xl overflow-hidden bg-mandasari-cream flex-none">
@@ -123,7 +121,7 @@
                     </div>
                     <div class="flex-grow text-center md:text-left">
                         <h4 class="font-serif text-xl mb-1">${item.name}</h4>
-                        <p class="text-mandasari-gold font-semibold">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.price)}</p>
+                        <p class="text-mandasari-gold font-semibold">${Cart.formatCurrency(item.price)}</p>
                     </div>
                     <div class="flex items-center gap-4 bg-mandasari-cream px-4 py-2 rounded-full border border-mandasari-gold/20">
                         <button onclick="updateQty(${item.id}, -1)" class="hover:text-mandasari-gold"><i data-lucide="minus" class="w-4 h-4"></i></button>
@@ -131,7 +129,7 @@
                         <button onclick="updateQty(${item.id}, 1)" class="hover:text-mandasari-gold"><i data-lucide="plus" class="w-4 h-4"></i></button>
                     </div>
                     <div class="text-right min-w-[120px]">
-                        <p class="font-bold text-lg">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.price * item.quantity)}</p>
+                        <p class="font-bold text-lg">${Cart.formatCurrency(item.price * item.quantity)}</p>
                         <button onclick="removeItem(${item.id})" class="text-red-400 hover:text-red-600 text-sm flex items-center gap-1 mt-2 justify-end">
                             <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus
                         </button>
@@ -139,19 +137,26 @@
                 </div>
             `).join('');
 
-            // Update Summary
             summaryContainer.style.display = 'block';
-            const subtotal = items.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
-            document.getElementById('summary-subtotal').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subtotal);
-            document.getElementById('summary-total').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subtotal);
+            const ringkasan = Cart.hitungRingkasan();
+            document.getElementById('summary-subtotal').textContent = Cart.formatCurrency(ringkasan.subtotal);
+            document.getElementById('summary-total').textContent = Cart.formatCurrency(ringkasan.totalAkhir);
             
             lucide.createIcons();
         };
 
-        // Fungsi bantu (Wajib ada di cart.js kamu nanti)
-        window.updateQty = (id, change) => { /* Logika update LocalStorage */ };
-        window.removeItem = (id) => { /* Logika hapus LocalStorage */ };
+        window.updateQty = (id, change) => {
+            const item = Cart.items.find(i => i.id === id);
+            if(item) {
+                Cart.updateJumlah(id, item.quantity + change);
+            }
+        };
 
+        window.removeItem = (id) => {
+            Cart.hapusItem(id);
+        };
+
+        window.addEventListener('update-tampilan-keranjang', renderCart);
         renderCart();
     </script>
 </body>
