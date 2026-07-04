@@ -3,12 +3,9 @@
  */
 
 const AdminController = {
-    // Inisialisasi pengecekan akses
     init: () => {
-        // Cek apakah user sudah login dan memiliki peran admin
-        const session = Auth.getSession();
+        const session = Storage.get(STORAGE_KEYS.SESSION);
         if (!Auth.isLoggedIn() || session.role !== 'admin') {
-            // Jika bukan admin, arahkan ke halaman beranda
             window.location.href = 'index.html';
             return;
         }
@@ -16,21 +13,23 @@ const AdminController = {
         AdminController.loadDashboardStats();
     },
 
-    // Memuat data statistik ke dashboard
     loadDashboardStats: () => {
         const daftarUser = Storage.get(STORAGE_KEYS.USERS) || [];
         const daftarPesanan = Storage.get(STORAGE_KEYS.ORDERS) || [];
         
-        // Hitung total pendapatan dari pesanan yang masuk
         let totalPendapatan = 0;
         daftarPesanan.forEach(item => {
-            totalPendapatan += item.total;
+            if(item.rincianBiaya && item.rincianBiaya.totalBayar) {
+                totalPendapatan += item.rincianBiaya.totalBayar;
+            } else {
+                totalPendapatan += item.total || 0;
+            }
         });
 
-        // Update elemen UI untuk statistik (Gunakan ID yang sesuai di HTML)
-        const userEl = document.getElementById('stat-total-users');
-        const orderEl = document.getElementById('stat-total-orders');
-        const revenueEl = document.getElementById('stat-total-revenue');
+        // Diubah agar pas dengan ID elemen di admin.html kalian
+        const userEl = document.getElementById('stat-users');
+        const orderEl = document.getElementById('stat-orders');
+        const revenueEl = document.getElementById('stat-revenue');
 
         if (userEl) userEl.textContent = daftarUser.length;
         if (orderEl) orderEl.textContent = daftarPesanan.length;
@@ -39,7 +38,6 @@ const AdminController = {
         AdminController.renderDaftarTransaksi(daftarPesanan);
     },
 
-    // Menampilkan tabel transaksi terbaru
     renderDaftarTransaksi: (pesanan) => {
         const tabelBody = document.getElementById('orders-tbody');
         if (!tabelBody) return;
@@ -47,18 +45,16 @@ const AdminController = {
         if (pesanan.length === 0) {
             tabelBody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="py-10 text-center text-slate-400 font-medium">
+                    <td colspan="5" class="py-10 text-center text-slate-400 font-medium">
                         Belum ada transaksi masuk untuk saat ini.
                     </td>
                 </tr>`;
             return;
         }
 
-        // Urutkan pesanan terbaru berada di paling atas
-        const sortedOrders = [...pesanan].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedOrders = [...pesanan].sort((a, b) => new Date(b.waktuTransaksi) - new Date(a.waktuTransaksi));
 
         tabelBody.innerHTML = sortedOrders.map(order => {
-            // Logika Label Status (Badge)
             let badgeClass = '';
             let statusIndo = '';
 
@@ -80,21 +76,22 @@ const AdminController = {
                     statusIndo = order.status;
             }
 
+            const totalBayar = order.rincianBiaya ? order.rincianBiaya.totalBayar : (order.total || 0);
+
             return `
                 <tr class="border-b border-mandasari-gold/5 hover:bg-mandasari-cream/30 transition-colors">
                     <td class="py-4 px-4 font-mono text-xs text-mandasari-gold font-bold">#${order.id.substring(0, 8)}</td>
                     <td class="py-4 px-4">
-                        <div class="text-sm font-bold text-mandasari-navy">${order.userName || 'Customer'}</div>
-                        <div class="text-[10px] text-slate-400">${order.userEmail}</div>
+                        <div class="text-sm font-bold text-mandasari-navy">${order.customerName || 'Customer'}</div>
+                        <div class="text-[10px] text-slate-400">${order.customerEmail || ''}</div>
                     </td>
-                    <td class="py-4 px-4 text-xs font-medium">${App.formatDate ? App.formatDate(order.date) : order.date}</td>
                     <td class="py-4 px-4">
                         <span class="px-3 py-1 border rounded-full text-[10px] font-black uppercase tracking-wider ${badgeClass}">
                             ${statusIndo}
                         </span>
                     </td>
-                    <td class="py-4 px-4 font-bold text-sm text-right">${Cart.formatCurrency(order.total)}</td>
-                    <td class="py-4 px-4 text-right">
+                    <td class="py-4 px-4 font-bold text-sm text-right">${Cart.formatCurrency(totalBayar)}</td>
+                    <td class="py-4 px-4 text-center">
                         <select 
                             onchange="AdminController.ubahStatusPesanan('${order.id}', this.value)" 
                             class="bg-white border border-mandasari-gold/20 rounded-lg px-2 py-1.5 text-[11px] font-bold focus:ring-2 focus:ring-mandasari-gold/20 outline-none cursor-pointer"
@@ -109,22 +106,17 @@ const AdminController = {
         }).join('');
     },
 
-    // Fungsi untuk mengubah status pesanan
     ubahStatusPesanan: (idPesanan, statusBaru) => {
-        const berhasil = Orders.updateOrderStatus(idPesanan, statusBaru);
+        const berhasil = PesananMandasari.perbaruiStatus(idPesanan, statusBaru);
         
         if (berhasil) {
-            Toast.show(`Pesanan ${idPesanan.substring(0, 8)} diperbarui ke: ${statusBaru}`, 'success');
-            // Refresh data tampilan
+            if (typeof Toast !== 'undefined') Toast.show(`Pesanan ${idPesanan.substring(0, 8)} diperbarui ke: ${statusBaru}`, 'success');
             AdminController.loadDashboardStats();
         } else {
-            Toast.show("Gagal memperbarui status pesanan", "error");
+            if (typeof Toast !== 'undefined') Toast.show("Gagal memperbarui status pesanan", "error");
         }
     }
 };
 
-// Hubungkan ke window agar bisa diakses oleh atribut onclick/onchange di HTML
 window.AdminController = AdminController;
-
-// Jalankan inisialisasi saat dokumen siap
 document.addEventListener('DOMContentLoaded', AdminController.init);
