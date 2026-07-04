@@ -3,20 +3,15 @@
  */
 
 const KeranjangMandasari = {
-    // Memuat item dari penyimpanan lokal saat inisialisasi
     items: Storage.get(STORAGE_KEYS.CART) || [],
 
     init: () => {
         KeranjangMandasari.perbaruiBadgeNavigasi();
     },
 
-    /**
-     * Menambah Produk ke Keranjang
-     */
     tambahProduk: (produk, jumlah = 1) => {
-        // Cek autentikasi sebelum belanja
         if (!MandasariAuth.isLoggedIn()) {
-            Toast.show('Silakan masuk akun untuk mulai belanja', 'warning');
+            if (typeof Toast !== 'undefined') Toast.show('Silakan masuk akun untuk mulai belanja', 'warning');
             setTimeout(() => window.location.href = 'login.html', 1500);
             return false;
         }
@@ -24,16 +19,14 @@ const KeranjangMandasari = {
         const itemAda = KeranjangMandasari.items.find(item => item.id === produk.id);
 
         if (itemAda) {
-            // Validasi ketersediaan stok kue
             if (itemAda.quantity + jumlah > produk.stock) {
-                Toast.show('Maaf, stok kue tidak mencukupi', 'error');
+                if (typeof Toast !== 'undefined') Toast.show('Maaf, stok kue tidak mencukupi', 'error');
                 return false;
             }
             itemAda.quantity += jumlah;
         } else {
-            // Cek stok untuk item baru
             if (jumlah > produk.stock) {
-                Toast.show('Jumlah melebiuk stok yang tersedia', 'error');
+                if (typeof Toast !== 'undefined') Toast.show('Jumlah melebihi stok yang tersedia', 'error');
                 return false;
             }
             KeranjangMandasari.items.push({
@@ -48,24 +41,23 @@ const KeranjangMandasari = {
         }
 
         KeranjangMandasari.simpanData();
-        Toast.show(`${produk.name} berhasil masuk keranjang`, 'success');
+        if (typeof Toast !== 'undefined') Toast.show(`${produk.name} berhasil masuk keranjang`, 'success');
         return true;
     },
 
-    /**
-     * Menghapus Satu Jenis Produk
-     */
+    addById: (id, jumlah = 1) => {
+        if (typeof KatalogMandasari !== 'undefined') {
+            const produk = KatalogMandasari.ambilBerdasarkanId(id);
+            if (produk) KeranjangMandasari.tambahProduk(produk, jumlah);
+        }
+    },
+
     hapusItem: (idProduk) => {
-        KeranjangMandasari.items = KeranjangMandasari.items.filter(item => item.id !== idProduk);
+        表达 = KeranjangMandasari.items = KeranjangMandasari.items.filter(item => item.id !== idProduk);
         KeranjangMandasari.simpanData();
-        
-        // Kirim sinyal agar halaman keranjang melakukan refresh UI
         window.dispatchEvent(new CustomEvent('update-tampilan-keranjang'));
     },
 
-    /**
-     * Update Jumlah (Quantity) Item
-     */
     updateJumlah: (idProduk, jumlahBaru) => {
         const item = KeranjangMandasari.items.find(i => i.id === idProduk);
         if (!item) return false;
@@ -76,7 +68,7 @@ const KeranjangMandasari = {
         }
 
         if (jumlahBaru > item.stock) {
-            Toast.show(`Hanya tersedia ${item.stock} porsi`, 'warning');
+            if (typeof Toast !== 'undefined') Toast.show(`Hanya tersedia ${item.stock} porsi`, 'warning');
             item.quantity = item.stock;
         } else {
             item.quantity = jumlahBaru;
@@ -87,37 +79,20 @@ const KeranjangMandasari = {
         return true;
     },
 
-    /**
-     * Mengosongkan Seluruh Isi Keranjang
-     */
     kosongkan: () => {
         KeranjangMandasari.items = [];
         KeranjangMandasari.simpanData();
         window.dispatchEvent(new CustomEvent('update-tampilan-keranjang'));
     },
 
-    /**
-     * Kalkulasi Total Belanja
-     */
     hitungRingkasan: () => {
-        const subtotal = KeranjangMandasari.items.reduce((acc, item) => {
-            return acc + (item.price * item.quantity);
-        }, 0);
-
-        // Contoh logika pajak atau biaya layanan 5% (opsional)
-        const biayaLayanan = subtotal * 0.05;
+        const subtotal = KeranjangMandasari.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        const biayaLayanan = 0; // Set ke 0 biar sinkron dengan checkout (Gratis Ongkir)
         const totalAkhir = subtotal + biayaLayanan;
 
-        return { 
-            subtotal, 
-            biayaLayanan, 
-            totalAkhir 
-        };
+        return { subtotal, biayaLayanan, totalAkhir };
     },
 
-    /**
-     * Format Mata Uang Rupiah (IDR)
-     */
     formatRupiah: (angka) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -126,38 +101,32 @@ const KeranjangMandasari = {
         }).format(angka);
     },
 
-    /**
-     * Simpan ke LocalStorage & Sync Badge
-     */
     simpanData: () => {
         Storage.set(STORAGE_KEYS.CART, KeranjangMandasari.items);
         KeranjangMandasari.perbaruiBadgeNavigasi();
     },
 
-    /**
-     * Update Angka pada Icon Keranjang di Navbar
-     */
     perbaruiBadgeNavigasi: () => {
-        const badges = document.querySelectorAll('.cart-counter-badge');
-        const totalJenisKue = KeranjangMandasari.items.length;
-        
-        badges.forEach(badge => {
-            if (totalJenisKue > 0) {
-                badge.textContent = totalJenisKue;
-                badge.classList.remove('hidden');
-                
-                // Animasi pop-up saat angka berubah
-                badge.animate([
-                    { transform: 'scale(1)' },
-                    { transform: 'scale(1.3)' },
-                    { transform: 'scale(1)' }
-                ], { duration: 300 });
-            } else {
-                badge.classList.add('hidden');
+        const badgeIds = ['cart-badge', 'cart-badge-desktop', 'cart-badge-mobile'];
+        const totalKuantitas = KeranjangMandasari.items.reduce((acc, item) => acc + item.quantity, 0);
+
+        badgeIds.forEach(id => {
+            const badge = document.getElementById(id);
+            if (badge) {
+                if (totalKuantitas > 0) {
+                    badge.textContent = totalKuantitas;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
             }
         });
     }
 };
 
-// Start logic saat halaman dimuat
+KeranjangMandasari.add = KeranjangMandasari.tambahProduk;
+KeranjangMandasari.formatCurrency = KeranjangMandasari.formatRupiah;
+window.Cart = KeranjangMandasari;
+window.KeranjangMandasari = KeranjangMandasari;
+
 window.addEventListener('DOMContentLoaded', KeranjangMandasari.init);
